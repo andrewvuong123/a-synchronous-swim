@@ -6,7 +6,6 @@
   // TODO: build the swim command fetcher here
   // Connect client to the server would fetch a random swim command from the server
   const swimFetcher = () => {
-    console.log('runswimfetch');
     $.ajax({
       type: 'GET',
       url: serverUrl,
@@ -18,8 +17,8 @@
         console.log('failed request!')
       }
     });
-    // settimeout to call periodically
-    setTimeout(swimFetcher, 5000);
+    // settimeout to call to server periodically
+    setTimeout(swimFetcher, 10000);
   }
   // initial call
   swimFetcher();

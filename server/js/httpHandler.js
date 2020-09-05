@@ -26,15 +26,28 @@ module.exports.router = (req, res, next = ()=>{}) => {
   // 2) parse the request object (url/method/data)
   // 3) perform logic, ex: save to database/randomize string/random swim command
   // 4) build response object after logic, html response codes
+  console.log('Serving request type ' + req.method + ' for url ' + req.url);
 
   if (req.method === 'GET') {
-    // let directions = ['up', 'down', 'left', 'right'];
-    // let rand = Math.floor(Math.random() * 4);
-    res.writeHead(200, headers);
-    res.end(messageQueue.dequeue());
-    console.log('Serving request type ' + req.method + ' for url ' + req.url);
+    if (req.url === '/img') {
+      console.log('here2');
+      fs.readFile('/img', (err, data) => {
+        console.log('here');
+        if (err) {
+          res.writeHead(404, headers);
+          res.end();
+        } else {
+          res.writeHead(200, headers);
+          res.end();
+        }
+      })
+    } else {
+      // let directions = ['up', 'down', 'left', 'right'];
+      // let rand = Math.floor(Math.random() * 4);
+      res.writeHead(200, headers);
+      res.end(messageQueue.dequeue());
+    }
   } else {
-    console.log('Serving request type ' + req.method + ' for url ' + req.url);
     res.writeHead(200, headers);
     res.end();
   }
