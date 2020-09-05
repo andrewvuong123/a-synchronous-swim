@@ -23,17 +23,20 @@ describe('server responses', () => {
 
   it('should respond to a GET request for a swim command', (done) => {
     // write your test here
-    let {req, res} = server.mock('/up', 'GET');
+    // make a mock request
+    let {req, res} = server.mock('/', 'GET');
 
+    // send the request to the router/server
     httpHandler.router(req, res);
+    // expect server response code to be successful
     expect(res._responseCode).to.equal(200);
+    // expect server response to end
     expect(res._ended).to.equal(true);
+    // expect server response data to be equal one of the four directions
     expect(res._data.toString()).to.be.empty;
 
-    test('swim command', () => {
-      expect(SwimMove()).toBe('left/right/up/down');
-    });
-
+    // server should respond with a swim command, write functionality inside of router
+    // the / for this is the only one endpoint to work with, implementing different requests and how we should respond to those requests.
     done();
   });
 

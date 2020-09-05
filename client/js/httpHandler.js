@@ -4,6 +4,7 @@
 
   //
   // TODO: build the swim command fetcher here
+  // Connect client to the server would fetch a random swim command from the server
   //
 
   /////////////////////////////////////////////////////////////////////
