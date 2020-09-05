@@ -5,7 +5,25 @@
   //
   // TODO: build the swim command fetcher here
   // Connect client to the server would fetch a random swim command from the server
-  //
+  const swimFetcher = () => {
+    console.log('runswimfetch');
+    $.ajax({
+      type: 'GET',
+      url: serverUrl,
+      success: (data) => {
+        // call swim command
+        SwimTeam.move(data);
+      },
+      fail: () => {
+        console.log('failed request!')
+      }
+    });
+    // settimeout to call periodically
+    // setTimeout(swimFetcher, 500);
+  }
+  // initial call
+  swimFetcher();
+
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uploader is provided for your convenience!
@@ -18,7 +36,7 @@
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: serverUrl,
       cache: false,
       contentType: false,
       processData: false,

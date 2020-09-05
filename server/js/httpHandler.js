@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
+const keypress = require('./keypressHandler');
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
@@ -26,9 +27,17 @@ module.exports.router = (req, res, next = ()=>{}) => {
   // 3) perform logic, ex: save to database/randomize string/random swim command
   // 4) build response object after logic, html response codes
 
-
-  console.log('Serving request type ' + req.method + ' for url ' + req.url);
-  res.writeHead(200, headers);
-  res.end();
+  if (req.method === 'GET') {
+    // let directions = ['up', 'down', 'left', 'right'];
+    // let rand = Math.floor(Math.random() * 4);
+    res.writeHead(200, headers);
+    keypress.initialize(message => res.end(`${message}`));
+    // res.end(directions[rand]);
+    console.log('Serving request type ' + req.method + ' for url ' + req.url);
+  } else {
+    console.log('Serving request type ' + req.method + ' for url ' + req.url);
+    res.writeHead(200, headers);
+    res.end();
+  }
   next(); // invoke next() at the end of a request to help with testing!
 };

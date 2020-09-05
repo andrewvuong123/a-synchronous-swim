@@ -33,7 +33,7 @@ describe('server responses', () => {
     // expect server response to end
     expect(res._ended).to.equal(true);
     // expect server response data to be equal one of the four directions
-    expect(res._data.toString()).to.be.empty;
+    expect(res._data.toString()).to.be.oneOf(['left', 'right', 'up', 'down']);
 
     // server should respond with a swim command, write functionality inside of router
     // the / for this is the only one endpoint to work with, implementing different requests and how we should respond to those requests.
