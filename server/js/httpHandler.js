@@ -31,8 +31,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
     // let directions = ['up', 'down', 'left', 'right'];
     // let rand = Math.floor(Math.random() * 4);
     res.writeHead(200, headers);
-    keypress.initialize(message => res.end(`${message}`));
-    // res.end(directions[rand]);
+    res.end(messageQueue.dequeue());
     console.log('Serving request type ' + req.method + ' for url ' + req.url);
   } else {
     console.log('Serving request type ' + req.method + ' for url ' + req.url);

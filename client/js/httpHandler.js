@@ -19,7 +19,7 @@
       }
     });
     // settimeout to call periodically
-    // setTimeout(swimFetcher, 500);
+    setTimeout(swimFetcher, 5000);
   }
   // initial call
   swimFetcher();
