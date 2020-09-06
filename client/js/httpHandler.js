@@ -19,7 +19,7 @@
     });
   }
   // initial call
-  setTimeout(swimFetcher, 0);
+  //setTimeout(swimFetcher, 0);
 
   // A fetch request that periodically gets random swim commands from the server
   const randSwim = () => {
@@ -38,7 +38,7 @@
     });
   }
   // initial call to random
-  // randSwim();
+  randSwim();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uploader is provided for your convenience!
