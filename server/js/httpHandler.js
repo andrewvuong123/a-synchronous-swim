@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
-const keypress = require('./keypressHandler');
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
@@ -13,7 +12,8 @@ module.exports.initialize = (queue) => {
   messageQueue = queue;
 };
 
-// get/post/update/fetch/delete/options are requests
+
+// get/post/update/fetch/delete/options = requests
 // facebook.com/login (login = endpoint or req.url)
 // router is where endpoint sits "whatever is after the /", manages data
 // each endpoint expect diff type of info
@@ -21,35 +21,62 @@ module.exports.initialize = (queue) => {
 // POST = Adding a background img
 // FETCH = Connecting client to server
 module.exports.router = (req, res, next = ()=>{}) => {
-  // STEPS
-  // 1) validation (validate a request)
-  // 2) parse the request object (url/method/data)
-  // 3) perform logic, ex: save to database/randomize string/random swim command
-  // 4) build response object after logic, html response codes
-  console.log('Serving request type ' + req.method + ' for url ' + req.url);
+  //console.log('Serving request type ' + req.method + ' for url ' + req.url);
 
-  if (req.method === 'GET') {
-    if (req.url === '/img') {
-      console.log('here2');
-      fs.readFile('/img', (err, data) => {
-        console.log('here');
-        if (err) {
-          res.writeHead(404, headers);
-          res.end();
-        } else {
-          res.writeHead(200, headers);
-          res.end();
-        }
-      })
-    } else {
-      // let directions = ['up', 'down', 'left', 'right'];
-      // let rand = Math.floor(Math.random() * 4);
-      res.writeHead(200, headers);
-      res.end(messageQueue.dequeue());
-    }
-  } else {
+  // OPTIONS request
+  if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
   }
-  next(); // invoke next() at the end of a request to help with testing!
+  // GET request
+  if (req.method === 'GET') {
+    // fetch swim command
+    if (req.url === '/') {
+      res.writeHead(200, headers);
+      res.end(messageQueue.dequeue());
+    }
+    // random swimming
+    if (req.url === '/random') {
+      let directions = ['up', 'down', 'left', 'right'];
+      let rand = Math.floor(Math.random() * 4);
+      res.writeHead(200, headers);
+      res.end(directions[rand]);
+    }
+    // upload a bg img
+    if (req.url === '/background.jpg') {
+      fs.readFile(module.exports.backgroundImageFile, (err, data) => {
+        if (err) {
+          // 404 response
+          res.writeHead(404);
+        } else {
+          // success, send back binary data
+          res.writeHead(200);
+          res.write(data, 'binary');
+        }
+        res.end();
+        next();
+      });
+    }
+  }
+  // POST request
+  if (req.method === 'POST' && req.url === '/background.jpg') {
+    // initialize an empty buffer
+    var fileData = Buffer.alloc(0);
+    // on each chunk we get, build up image to filedata
+    req.on('data', (chunk) => {
+      fileData = Buffer.concat([fileData, chunk]);
+    });
+    // once done building img, can write file
+    req.on('end', () => {
+      var file = multipart.getFile(fileData);
+      // writes specified data to a file
+      fs.writeFile(module.exports.backgroundImageFile, file.data, (err) => {
+        // if err, 404 else 201
+        res.writeHead(err ? 400 : 201, headers);
+        res.end();
+        next();
+      });
+    });
+  }
 };
+

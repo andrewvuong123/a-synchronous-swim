@@ -3,11 +3,13 @@
 const keypressHandler = require('./js/keypressHandler');
 const messageQueue = require('./js/messageQueue');
 
+// whenever key pressed, add to queue
 keypressHandler.initialize(message => messageQueue.enqueue(message));
 
 const httpHandler = require('./js/httpHandler');
-
+// initialize http handler with the queue
 httpHandler.initialize(messageQueue);
+
 const http = require('http');
 const server = http.createServer(httpHandler.router);
 

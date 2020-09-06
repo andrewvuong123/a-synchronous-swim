@@ -2,9 +2,7 @@
 
   const serverUrl = 'http://127.0.0.1:3000';
 
-  //
-  // TODO: build the swim command fetcher here
-  // Connect client to the server would fetch a random swim command from the server
+  // A fetch request that periodically gets a swim command from the server
   const swimFetcher = () => {
     $.ajax({
       type: 'GET',
@@ -13,16 +11,34 @@
         // call swim command
         SwimTeam.move(data);
       },
-      fail: () => {
-        console.log('failed request!')
+      complete: () => {
+        // calls this only after completion of each AJAX request
+        // never have multiple requests backing up
+        setTimeout(swimFetcher, 1000);
       }
     });
-    // settimeout to call to server periodically
-    setTimeout(swimFetcher, 10000);
   }
   // initial call
-  swimFetcher();
+  setTimeout(swimFetcher, 0);
 
+  // A fetch request that periodically gets random swim commands from the server
+  const randSwim = () => {
+    $.ajax({
+      type: 'GET',
+      url: serverUrl + '/random',
+      success: (data) => {
+        // call swim command
+        SwimTeam.move(data);
+      },
+      complete: () => {
+        // calls this only after completion of each AJAX request
+        // never have multiple requests backing up
+        setTimeout(randSwim, 100);
+      }
+    });
+  }
+  // initial call to random
+  // randSwim();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uploader is provided for your convenience!
@@ -35,7 +51,7 @@
     $.ajax({
       type: 'POST',
       data: formData,
-      url: serverUrl,
+      url: serverUrl + '/background.jpg', // url in client must match url on server
       cache: false,
       contentType: false,
       processData: false,
